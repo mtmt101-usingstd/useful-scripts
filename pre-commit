@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+def find_missing_files(files, targets)
+  missing_files = []
+  targets.each do |target|
+    found = false
+    files.each_line do |file|
+      file.chomp!
+      if file.end_with?(target) then
+        found = true
+      end
+    end
+    unless found then
+      missing_files << target
+    end
+  end
+  return missing_files
+end
+
+files_changed = `git diff --cached --name-only HEAD`
+scss_files = []
+files_changed.each_line do |filename|
+  filename.chomp!
+  next unless filename.end_with?('.css')
+  target = File.basename(filename).gsub('.css', '.scss');
+  p target
+  scss_files << target
+end
+
+missing_files = find_missing_files(files_changed, scss_files)
+if missing_files.length > 0 then
+  puts "[commit rejected]"
+  puts "Sorry, this commit is not be allowed because the following css file(s) seem to be edited directly."
+  missing_files.each do |filename|
+    puts filename
+  end
+  exit 1
+end
