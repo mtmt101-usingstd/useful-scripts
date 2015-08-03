@@ -30,7 +30,7 @@ end
 missing_files = find_missing_files(files_changed, scss_files)
 if missing_files.length > 0 then
   puts "[commit rejected]"
-  puts "Sorry, this commit is not be allowed because the following css file(s) seem to be edited directly."
+  puts "Sorry, this commit is not be allowed because the following scss file(s) should be edited."
   missing_files.each do |filename|
     puts filename
   end
